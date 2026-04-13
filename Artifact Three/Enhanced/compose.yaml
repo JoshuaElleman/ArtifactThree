@@ -1,0 +1,25 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: boardgame-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  dashboard:
+    build: .
+    container_name: boardgame-dashboard
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    environment:
+      MONGO_URI: mongodb://mongo:27017/
+      MONGO_DB: BoardGamePlays
+      MONGO_COLLECTION: Plays
+    ports:
+      - "8050:8050"
+
+volumes:
+  mongo_data:
